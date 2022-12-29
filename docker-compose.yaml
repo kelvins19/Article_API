@@ -1,0 +1,24 @@
+version: '3'
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: kelvins19
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+  app:
+    build: .
+    command: ["./main"]
+    ports:
+      - "8080:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://kelvins19:123456@db:5432/postgres?sslmode=disable
+  migrate:
+    build: .
+    command: migrate -path db/migration -database ${DATABASE_URL} -verbose up
+    depends_on:
+      - db

@@ -22,3 +22,6 @@
 1. Make sure the server has already been started
 2. If not, run `go run main.go`
 3. Go to test directory, run `go test`
+
+## How to build using docker
+***NOT WORKING YET***

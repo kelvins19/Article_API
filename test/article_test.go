@@ -17,7 +17,7 @@ type Article struct {
 func TestCreateArticle(t *testing.T) {
 
 	// Create a new article
-	article := Article{Author: "Spongebob", Title: "Test Title", Body: "Test Content"}
+	article := Article{Author: "Author", Title: "Hello World", Body: "Hello World"}
 	body, err := json.Marshal(article)
 	if err != nil {
 		t.Fatalf("Error marshaling JSON: %v", err)

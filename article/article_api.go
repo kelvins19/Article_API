@@ -28,6 +28,10 @@ type ApiResponse struct {
 
 type ArticleAPI struct{}
 
+var psqlInfo string = fmt.Sprintf("host=%s port=%d user=%s "+
+	"password=%s dbname=%s sslmode=disable",
+	constants.DB_HOST, constants.DB_PORT, constants.DB_USER, constants.DB_PASSWORD, constants.DB_NAME)
+
 func (articleApi *ArticleAPI) CreateArticleHandler(w http.ResponseWriter, r *http.Request) {
 	var article Article
 	var apiResponse ApiResponse
@@ -37,10 +41,6 @@ func (articleApi *ArticleAPI) CreateArticleHandler(w http.ResponseWriter, r *htt
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		constants.DB_HOST, constants.DB_PORT, constants.DB_USER, constants.DB_PASSWORD, constants.DB_NAME)
 
 	db, err := sqlx.Connect("postgres", psqlInfo)
 	if err != nil {
@@ -72,10 +72,6 @@ func (articleApi *ArticleAPI) ListArticlesHandler(w http.ResponseWriter, r *http
 	// Retrieve articles from database
 	articles := []Article{}
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		constants.DB_HOST, constants.DB_PORT, constants.DB_USER, constants.DB_PASSWORD, constants.DB_NAME)
-
 	db, err := sqlx.Connect("postgres", psqlInfo)
 	if err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
@@ -84,15 +80,12 @@ func (articleApi *ArticleAPI) ListArticlesHandler(w http.ResponseWriter, r *http
 	script := "SELECT id, author, title, body FROM articles"
 	if params["author"] != nil && params["query"] != nil {
 		script += " WHERE LOWER(author) LIKE '%" + params["author"][0] + "%' AND (LOWER(title) LIKE '%" + params["query"][0] + "%' OR LOWER(body) LIKE '%" + params["query"][0] + "%')"
-		fmt.Print(script)
 	} else {
 		if params["author"] != nil {
 			script += " WHERE LOWER(author) '%" + params["author"][0] + "%'"
-			fmt.Print(script)
 		}
 		if params["query"] != nil {
 			script += " WHERE LOWER(title) LIKE '%" + params["query"][0] + "%' OR LOWER(body) LIKE '%" + params["query"][0] + "%'"
-			fmt.Print(script)
 		}
 	}
 
@@ -136,10 +129,6 @@ func (articleApi *ArticleAPI) GetArticleHandler(w http.ResponseWriter, r *http.R
 
 	// Retrieve the article from the database
 	var article Article
-
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		constants.DB_HOST, constants.DB_PORT, constants.DB_USER, constants.DB_PASSWORD, constants.DB_NAME)
 
 	db, err := sqlx.Connect("postgres", psqlInfo)
 	if err != nil {
